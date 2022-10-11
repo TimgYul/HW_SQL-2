@@ -54,22 +54,18 @@ GROUP BY singer.name, t.time
 HAVING t.time = (SELECT min(time) FROM track)
 ORDER BY singer.name;
 
-SELECT DISTINCT a.name  
+SELECT a.name Album, count(t.name) Track_count   
 FROM track t  
 JOIN album a ON a.id = t.id_album 
-WHERE t.id_album IN (
-    SELECT id_album
-    FROM track
-    GROUP BY id_album
-    HAVING count(id) = (
-        SELECT count(id)
-        FROM track
-        GROUP BY id_album
-        ORDER BY count
-        limit 1
-    )
-)
-ORDER BY a.name
+group by a.name
+having  count(t.name) = (
+		select count (t.name) 
+		from album a
+		join track t  on a.id = t.id_album 
+		group by a.name 
+		order by count (t.name)
+		limit 1
+);
 
 
 
