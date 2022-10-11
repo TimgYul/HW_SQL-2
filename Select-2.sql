@@ -8,13 +8,22 @@ SELECT count(*) FROM track t
 JOIN album ON album.id = t.id_album 
 WHERE album."year" BETWEEN  2019 AND 2021;
  
-SELECT avg(time) FROM track;
+select a.name, AVG(t.time)
+from album as a
+left join track as t on t.id_album = a.id
+group by a.name
+order by AVG(t.time)
 
-SELECT s2.name 
+SELECT distinct s2.name 
 FROM singeralbum s  
 JOIN singer s2 ON s2.id = s.singer_id
-JOIN album ON album.id = s.album_id 
-WHERE album."year" <> 2020;
+where s2.name not in (
+	SELECT distinct s2.name 
+	FROM singeralbum s  
+	JOIN singer s2 ON s2.id = s.singer_id
+    JOIN album ON album.id = s.album_id 
+    WHERE album.year = 2020 ) 
+   order by s2.name;
 
 SELECT c2.name
 FROM collectiongroup c
